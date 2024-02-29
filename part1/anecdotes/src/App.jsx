@@ -77,6 +77,7 @@ const App = () => {
       </p>
       <h3>Most Voted Anecdote</h3>
       <Quote style={quoteStyle} anecdote={anecdotes[mostVotedAnectode]}></Quote>
+      <p>This anecdote has {votes[mostVotedAnectode]} votes!</p>
     </div>
   );
 };
