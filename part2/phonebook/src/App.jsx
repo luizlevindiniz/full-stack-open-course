@@ -2,34 +2,29 @@ import { useState } from "react";
 import PersonsList from "./components/PersonsList";
 import FilterByName from "./components/FilterByName";
 import FormStructure from "./components/form/FormStructure";
-import db from "./database/persons";
+import Notification from "./components/Notification";
+import { useEffect } from "react";
+import {
+  findPersonByName,
+  createPerson,
+  getAllPersons,
+  deletePerson,
+  findPersonByID,
+  updatePerson,
+} from "./services/persons";
+import { handleNotification } from "./services/notifications";
 
 const App = () => {
-  const [persons, setPersons] = useState(db);
-
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [filterByName, setFilterByName] = useState("");
+  const [notification, setNotification] = useState({
+    message: null,
+    variant: null,
+  });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (persons.filter((p) => p.name.trim() === newName.trim()).length === 0) {
-      setPersons(
-        persons.concat({
-          name: newName,
-          number: newPhone,
-          id: persons.length + 1,
-        })
-      );
-    } else {
-      alert(`${newName} is already added to phonebook`);
-    }
-    setNewName("");
-    setNewPhone("");
-  };
-
+  // HANDLERS
   const handleNewName = (event) => {
     setNewName(event.target.value);
   };
@@ -42,6 +37,97 @@ const App = () => {
     setFilterByName(event.target.value);
   };
 
+  // CREATE or UPDATE
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const person = findPersonByName(persons, newName);
+
+    try {
+      if (!person) {
+        const payload = {
+          name: newName,
+          number: newPhone,
+        };
+        const newPerson = await createPerson(payload);
+        setPersons(persons.concat(newPerson));
+        handleNotification(
+          `Added ${newPerson.name}`,
+          "success",
+          setNotification
+        );
+      } else {
+        const proceedToUpdate =
+          confirm(`${newName} is already added to phonebook, replace the
+      old number with the new one?`);
+
+        if (proceedToUpdate) {
+          const toUpdate = {
+            ...person,
+            number: newPhone,
+          };
+          const updatedPerson = await updatePerson(person.id, toUpdate);
+          setPersons(
+            persons.map((person) =>
+              person.id === updatedPerson.id ? updatedPerson : person
+            )
+          );
+          handleNotification(
+            `${updatedPerson.name} number has changed`,
+            "success",
+            setNotification
+          );
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      handleNotification(
+        "Information about this person was removed or updated from server",
+        "error",
+        setNotification
+      );
+    } finally {
+      setNewName("");
+      setNewPhone("");
+    }
+  };
+
+  // READ
+  const getListOfPersons = async () => {
+    try {
+      const persons = await getAllPersons();
+      setPersons(persons);
+    } catch (err) {
+      console.log(err);
+      handleNotification(
+        "Error while reading list of persons!",
+        "error",
+        setNotification
+      );
+    }
+  };
+  useEffect(() => getListOfPersons, []);
+
+  // DELETE
+  const handleDelete = async (id) => {
+    const person = findPersonByID(persons, id);
+    try {
+      if (person && confirm(`Delete ${person.name}?`)) {
+        const deletedPerson = await deletePerson(id);
+        setPersons(persons.filter((p) => p.id != deletedPerson.id));
+      }
+    } catch (err) {
+      console.log(err);
+      handleNotification(
+        "Error while handling delete!",
+        "error",
+        setNotification
+      );
+    }
+  };
+
+  // Display
   const personsToList =
     filterByName === ""
       ? persons
@@ -49,9 +135,14 @@ const App = () => {
           p.name.toLowerCase().includes(filterByName.toLowerCase())
         );
 
+  // Rendered Component
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification
+        message={notification.message}
+        variant={notification.variant}
+      ></Notification>
       <FilterByName
         filter={filterByName}
         onChange={handleFilter}
@@ -66,7 +157,10 @@ const App = () => {
       ></FormStructure>
       <br />
       <h2>Numbers</h2>
-      <PersonsList persons={personsToList}></PersonsList>
+      <PersonsList
+        persons={personsToList}
+        deletePerson={handleDelete}
+      ></PersonsList>
     </div>
   );
 };

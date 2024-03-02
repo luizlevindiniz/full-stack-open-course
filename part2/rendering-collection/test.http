@@ -1,0 +1,31 @@
+GET http://localhost:3001/notes 
+
+###
+
+POST http://localhost:3001/notes
+Content-Type: application/json
+
+{
+    "content": "Note Content",
+    "important": false
+}
+
+###
+
+PUT http://localhost:3001/notes/a81f"
+Content-Type: application/json
+
+{
+    "content": "HTTP DELETE",
+    "important": true
+}
+
+###
+
+DELETE http://localhost:3001/events/7f1f2c63-275d-4b05-99df-aac703e58398
+
+###
+//form para criar tickets
+GET http://localhost:3001/events/af3f0c1d-e484-429d-86f5-7c1edcadae05/createTickets
+
+###
