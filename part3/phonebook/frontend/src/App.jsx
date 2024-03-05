@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PersonsList from "./components/PersonsList";
 import FilterByName from "./components/FilterByName";
 import FormStructure from "./components/form/FormStructure";
 import Notification from "./components/Notification";
-import { useEffect } from "react";
 import {
   findPersonByName,
   createPerson,
@@ -95,8 +94,7 @@ const App = () => {
   // READ
   const getListOfPersons = async () => {
     try {
-      const persons = await getAllPersons();
-      setPersons(persons);
+      return await getAllPersons();
     } catch (err) {
       console.log(err);
       handleNotification(
@@ -106,7 +104,10 @@ const App = () => {
       );
     }
   };
-  useEffect(() => getListOfPersons, []);
+
+  useEffect(() => {
+    getListOfPersons().then((data) => setPersons(data));
+  }, []);
 
   // DELETE
   const handleDelete = async (id) => {

@@ -63,12 +63,12 @@ const router = express.Router();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static("dist"));
 app.use(
   morgan(
     ":method :url :status :res[Content-Length] - :response-time ms :postData"
   )
 );
-//app.use(requestLogger);
 
 app.use("/api", router);
 // routes
