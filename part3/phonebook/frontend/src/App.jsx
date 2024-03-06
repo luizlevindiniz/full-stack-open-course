@@ -80,8 +80,9 @@ const App = () => {
       }
     } catch (err) {
       console.log(err);
+      const errMsg = err.response.data.error;
       handleNotification(
-        "Information about this person was removed or updated from server",
+        errMsg.substring(errMsg.indexOf(":") + 1).trim(),
         "error",
         setNotification
       );

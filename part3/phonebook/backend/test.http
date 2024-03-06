@@ -3,7 +3,17 @@ GET http://localhost:3001/api/persons/3
 ###
 
 POST http://localhost:3001/api/persons
-Content-Type: application/json
+content-type: application/json
+
+{
+    "name": "aDalovelace",
+    "number":"12-12-33333"
+}
+
+###
+
+PUT http://localhost:3001/api/persons/65e8597bcd4ee9475b4cd0a4
+content-type: application/json
 
 {
     "name": "aDalovelace",
@@ -14,4 +24,3 @@ Content-Type: application/json
 
 DELETE http://localhost:3001/api/persons/308166
 
-###
