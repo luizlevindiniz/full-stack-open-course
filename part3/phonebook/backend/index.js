@@ -26,9 +26,9 @@ app.use(
 
 // routes
 app.use("/api", router);
-app.get("/status", (req, res, next) => res.send("Online!"));
+app.get("/status", (req, res) => res.send("Online!"));
 
-router.get("/info", (req, res, next) => {
+router.get("/info", (req, res) => {
   Person.find({}).then((result) => {
     res.status(200);
     res.send(
@@ -42,7 +42,7 @@ router.get("/info", (req, res, next) => {
   });
 });
 
-router.get("/persons", (req, res, next) => {
+router.get("/persons", (req, res) => {
   Person.find({}).then((result) => {
     res.status(200);
     res.json(result);
@@ -92,7 +92,7 @@ router.get("/persons/:id", (req, res, next) => {
 router.delete("/persons/:id", (req, res, next) => {
   const id = req.params.id;
   Person.findByIdAndDelete(id)
-    .then((result) => {
+    .then(() => {
       res.statusMessage = "Person deleted!";
       res.status(204).end();
     })
