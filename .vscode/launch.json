@@ -16,7 +16,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\part3\\phonebook\\backend\\index.js"
+      "program": "${workspaceFolder}\\part4\\notes\\backend\\index.js"
     }
   ]
 }

@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 
 const api = supertest(app);
 
+let token;
 describe("api tests", () => {
   describe("tests that require a db filled w/ blogs", () => {
     beforeEach(async () => {
@@ -17,11 +18,24 @@ describe("api tests", () => {
       const blogsAsPromises = blogsToCreate.map((b) => b.save());
 
       await Promise.all(blogsAsPromises);
+
+      const login = {
+        username: "root",
+        password: "password",
+      };
+      const resp = await api
+        .post("/api/login")
+        .send(login)
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+
+      token = resp.body.token;
     });
 
     test("fetch all blogs and check", async () => {
       const blogsFromGet = await api
-        .get("/api/blogs")
+        .get("/api/blogs/")
+        .set("authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
 
@@ -32,6 +46,7 @@ describe("api tests", () => {
       const blogsInMongo = await apiHelper.getAllBlogsAsJSON();
       const apiResponse = await api
         .get("/api/blogs")
+        .set("authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
 
@@ -55,9 +70,17 @@ describe("api tests", () => {
         likes: 10,
       };
 
-      await api.post("/api/blogs").send(forbiddenBlog1).expect(400);
+      await api
+        .post("/api/blogs")
+        .set("authorization", `Bearer ${token}`)
+        .send(forbiddenBlog1)
+        .expect(400);
 
-      await api.post("/api/blogs").send(forbiddenBlog2).expect(400);
+      await api
+        .post("/api/blogs")
+        .set("authorization", `Bearer ${token}`)
+        .send(forbiddenBlog2)
+        .expect(400);
 
       const blogsAtEnd = await apiHelper.getAllBlogsAsJSON();
 
@@ -74,6 +97,7 @@ describe("api tests", () => {
 
       const created = await api
         .post("/api/blogs")
+        .set("authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -81,7 +105,10 @@ describe("api tests", () => {
       let blogsInMongo = await apiHelper.getAllBlogsAsJSON();
       assert.strictEqual(blogsInMongo.length, apiHelper.blogs.length + 1);
 
-      await api.delete(`/api/blogs/${created.body.id}`).expect(204);
+      await api
+        .delete(`/api/blogs/${created.body.id}`)
+        .set("authorization", `Bearer ${token}`)
+        .expect(204);
 
       blogsInMongo = await apiHelper.getAllBlogsAsJSON();
       assert.strictEqual(blogsInMongo.length, apiHelper.blogs.length);
@@ -99,6 +126,7 @@ describe("api tests", () => {
 
       await api
         .post("/api/blogs")
+        .set("authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -107,6 +135,7 @@ describe("api tests", () => {
 
       const get = await api
         .get("/api/blogs")
+        .set("authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
 
@@ -123,12 +152,14 @@ describe("api tests", () => {
 
       const created = await api
         .post("/api/blogs")
+        .set("authorization", `Bearer ${token}`)
         .send(blogWithoutLikes)
         .expect(201)
         .expect("Content-Type", /application\/json/);
 
       const response = await api
         .get(`/api/blogs/${created.body.id}`)
+        .set("authorization", `Bearer ${token}`)
         .expect(200)
         .expect("Content-Type", /application\/json/);
 
@@ -146,6 +177,7 @@ describe("api tests", () => {
 
       const created = await api
         .post("/api/blogs")
+        .set("authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -157,6 +189,7 @@ describe("api tests", () => {
 
       const update = await api
         .put(`/api/blogs/${created.body.id}`)
+        .set("authorization", `Bearer ${token}`)
         .send(updatedBlog)
         .expect(200)
         .expect("Content-Type", /application\/json/);
@@ -165,7 +198,7 @@ describe("api tests", () => {
     });
   });
 
-  after(() => {
-    mongoose.connection.close();
+  after(async () => {
+    await mongoose.connection.close();
   });
 });
