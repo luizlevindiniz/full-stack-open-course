@@ -13,7 +13,6 @@ const {
   unknownEndpoint,
   logTraffic,
   tokenExtractor,
-  userExtractor,
 } = require("./utils/middleware");
 
 mongoose.set("strictQuery", true);
@@ -37,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(tokenExtractor);
 app.use(logTraffic);
 
-app.use("/api/blogs", userExtractor, blogRouter);
+app.use("/api/blogs", blogRouter);
 app.use("/api/users", userRouter);
 app.use("/api/login", loginRouter);
 

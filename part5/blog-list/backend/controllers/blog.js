@@ -1,12 +1,13 @@
 const blogRouter = require("express").Router();
 const { Blog } = require("../models/blog");
+const { userExtractor } = require("../utils/middleware");
 
 blogRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate("user");
   response.json(blogs);
 });
 
-blogRouter.post("/", async (request, response) => {
+blogRouter.post("/", userExtractor, async (request, response) => {
   const { title, author, url, likes } = request.body;
 
   const createdByUser = request.user;
@@ -37,7 +38,7 @@ blogRouter.get("/:id", async (request, response) => {
   else response.status(404).end();
 });
 
-blogRouter.delete("/:id", async (request, response) => {
+blogRouter.delete("/:id", userExtractor, async (request, response) => {
   const id = request.params.id;
 
   const owner = request.user;
