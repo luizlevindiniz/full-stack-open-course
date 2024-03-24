@@ -1,9 +1,26 @@
-import Blog from "./Blog";
-const BlogsForm = ({ blogs, newBlog, setNewBlog, handleNewBlog }) => {
+import { useState, useEffect } from "react";
+const BlogForm = ({ handleNewBlog }) => {
+  const defaultBlog = {
+    title: "",
+    author: "",
+    url: "",
+  };
+  const [newBlog, setNewBlog] = useState(defaultBlog);
+
+  const createNewBlog = async (event) => {
+    event.preventDefault();
+    try {
+      await handleNewBlog(newBlog);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setNewBlog(defaultBlog);
+    }
+  };
+
   return (
     <div>
-      <h2>create new</h2>
-      <form onSubmit={handleNewBlog}>
+      <form onSubmit={createNewBlog}>
         <div>
           <label htmlFor="title">title: </label>
           <input
@@ -39,14 +56,8 @@ const BlogsForm = ({ blogs, newBlog, setNewBlog, handleNewBlog }) => {
         </div>
         <button type="submit">create</button>
       </form>
-      <br />
-      <div>
-        {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
-        ))}
-      </div>
     </div>
   );
 };
 
-export default BlogsForm;
+export default BlogForm;

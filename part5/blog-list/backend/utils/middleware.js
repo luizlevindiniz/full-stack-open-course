@@ -20,6 +20,7 @@ const tokenExtractor = (request, response, next) => {
   if (authorization && authorization.startsWith("Bearer ")) {
     request.token = authorization.replace("Bearer ", "");
   }
+
   next();
 };
 

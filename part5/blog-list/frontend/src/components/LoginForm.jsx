@@ -1,15 +1,37 @@
-const LoginForm = ({
-  username,
-  handleUsername,
-  password,
-  handlePassword,
-  handleLogin,
-}) => {
+import { useState } from "react";
+const LoginForm = ({ handleLogin }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleUsername = (event) => {
+    setUsername(event.target.value);
+  };
+  const handlePassword = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const login = async (event) => {
+    event.preventDefault();
+    let loginObject = {
+      username: username,
+      password: password,
+    };
+
+    try {
+      await handleLogin(loginObject);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setUsername("");
+      setPassword("");
+    }
+  };
+
   return (
     <>
-      <h2>Login</h2>
+      <h1>Login</h1>
       <div>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={login}>
           <div>
             <label htmlFor="username">username: </label>
             <input
