@@ -19,7 +19,7 @@ const BlogForm = ({ handleNewBlog }) => {
   };
 
   return (
-    <div>
+    <div className="blogForm">
       <form onSubmit={createNewBlog}>
         <div>
           <label htmlFor="title">title: </label>
@@ -54,7 +54,9 @@ const BlogForm = ({ handleNewBlog }) => {
             onChange={(e) => setNewBlog({ ...newBlog, url: e.target.value })}
           />
         </div>
-        <button type="submit">create</button>
+        <button type="submit" className="submitButton">
+          create
+        </button>
       </form>
     </div>
   );

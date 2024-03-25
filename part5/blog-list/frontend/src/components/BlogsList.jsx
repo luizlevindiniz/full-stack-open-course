@@ -4,7 +4,6 @@ import Togglable from "./Togglable";
 import blogService from "../services/blogs";
 import BlogForm from "./BlogForm";
 const BlogsList = ({ setNotification }) => {
-  console.log("blog list render");
   const [blogs, setBlogs] = useState([]);
   const [blogWasDeleted, setBlogWasDeleted] = useState(false);
 

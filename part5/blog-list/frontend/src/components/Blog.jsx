@@ -3,7 +3,6 @@ import blogService from "../services/blogs";
 import PropTypes from "prop-types";
 
 const Blog = ({ blog, setBlogWasDeleted }) => {
-  console.log("blog render");
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -56,16 +55,21 @@ const Blog = ({ blog, setBlogWasDeleted }) => {
 
   const detailedView = (blog) => {
     return (
-      <div>
+      <div className="details">
         <p>{blog.url}</p>
         <p>
           {likes}
-          <button type="button" onClick={handleLikes}>
+          <button type="button" onClick={handleLikes} className="likeButton">
             like
           </button>
         </p>
         {blog.user && blog.user.length > 0 && <p>{blog.user[0].name}</p>}
-        <button type="button" style={removeButtonStyle} onClick={handleRemove}>
+        <button
+          type="button"
+          style={removeButtonStyle}
+          onClick={handleRemove}
+          className="removeButton"
+        >
           remove
         </button>
       </div>
@@ -77,19 +81,18 @@ const Blog = ({ blog, setBlogWasDeleted }) => {
   };
 
   return (
-    <>
-      <div style={blogStyle}>
-        {blog.title} - {blog.author}
-        <button
-          style={{ marginLeft: 3 }}
-          type="button"
-          onClick={handleShowDetails}
-        >
-          {showDetails ? "hide" : "view"}
-        </button>
-        {showDetails && detailedView(blog)}
-      </div>
-    </>
+    <div style={blogStyle} className="singleBlog">
+      {blog.title} - {blog.author}
+      <button
+        style={{ marginLeft: 3 }}
+        type="button"
+        onClick={handleShowDetails}
+        className="showDetails"
+      >
+        {showDetails ? "hide" : "view"}
+      </button>
+      {showDetails && detailedView(blog)}
+    </div>
   );
 };
 
