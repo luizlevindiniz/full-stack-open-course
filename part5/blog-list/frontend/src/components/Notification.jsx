@@ -4,7 +4,9 @@ const Notification = ({ notification }) => {
   } else {
     return (
       <div>
-        <h3 style={{ color: "red" }}>Note: {notification}</h3>
+        <h3 style={{ color: "red" }} className="notification">
+          Warning: {notification}
+        </h3>
       </div>
     );
   }

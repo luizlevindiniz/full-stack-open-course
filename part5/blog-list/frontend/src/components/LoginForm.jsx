@@ -29,8 +29,8 @@ const LoginForm = ({ handleLogin }) => {
 
   return (
     <>
-      <h1>Login</h1>
-      <div>
+      <h1 aria-label="loginHeader">Login</h1>
+      <div className="loginFormDiv">
         <form onSubmit={login}>
           <div>
             <label htmlFor="username">username: </label>

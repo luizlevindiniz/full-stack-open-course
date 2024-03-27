@@ -12,6 +12,7 @@ const BlogsList = ({ setNotification }) => {
   const handleNewBlog = async (newBlog) => {
     try {
       const createdBlog = await blogService.create(newBlog);
+      console.log(createdBlog);
       setBlogs(() => blogs.concat(createdBlog));
       setNotification(
         `A new blog ${createdBlog.title} by ${createdBlog.author} added.`
@@ -32,6 +33,7 @@ const BlogsList = ({ setNotification }) => {
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
+      console.log(blogs);
       setBlogs(
         blogs.sort(function (a, b) {
           if (a.likes > b.likes) {

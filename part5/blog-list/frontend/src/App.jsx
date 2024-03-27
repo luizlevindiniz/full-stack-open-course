@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import BlogsList from "./components/BlogsList";
 import blogService from "./services/blogs";
 import LoginForm from "./components/LoginForm";
 import axios from "axios";
 import Notification from "./components/Notification";
+import UserContext from "./components/UserContext";
 
 const App = () => {
   const [loggedUser, setLoggedUser] = useState(null);
@@ -49,15 +50,17 @@ const App = () => {
         <LoginForm handleLogin={handleLogin}></LoginForm>
       ) : (
         <div>
-          <h1>blogs</h1>
+          <h1 aria-label="blogs">blogs</h1>
           {`Welcome ${loggedUser.name}!`}
           <button type="submit" onClick={handleLogout}>
             logout
           </button>
-
-          <BlogsList setNotification={setNotification}></BlogsList>
+          <UserContext.Provider value={loggedUser}>
+            <BlogsList setNotification={setNotification}></BlogsList>
+          </UserContext.Provider>
         </div>
       )}
+      <div>Footer</div>
     </div>
   );
 };

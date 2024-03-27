@@ -84,6 +84,7 @@ const LoginForm = ({ setLoggedUser, setErrorMessage }) => {
               type="text"
               name="username"
               id="username"
+              data-testid="username"
               value={username}
               onChange={handleUsernameChange}
             />
@@ -95,11 +96,14 @@ const LoginForm = ({ setLoggedUser, setErrorMessage }) => {
               type="password"
               name="password"
               id="password"
+              data-testid="password"
               value={password}
               onChange={handlePasswordChange}
             />
           </div>
-          <button type="submit">login</button>
+          <button type="submit" data-testid="submitFormButton">
+            login
+          </button>
         </form>
       </div>
     </>

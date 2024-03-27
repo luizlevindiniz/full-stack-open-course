@@ -1,5 +1,4 @@
 import Note from "./Note";
-import Footer from "./Footer";
 import NoteForm from "./NoteForm";
 import noteService from "../services/notes";
 import Togglable from "./Togglable";
@@ -77,7 +76,6 @@ const NotesList = ({ setErrorMessage }) => {
       <Togglable buttonLabel={"new note"} ref={showNotesForm}>
         <NoteForm addNote={addNote}></NoteForm>
       </Togglable>
-      <Footer />
     </div>
   );
 };

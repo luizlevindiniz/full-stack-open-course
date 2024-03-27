@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "./UserContext";
 import blogService from "../services/blogs";
 import PropTypes from "prop-types";
 
@@ -16,38 +17,47 @@ const Blog = ({ blog, setBlogWasDeleted }) => {
     borderRadius: 5,
   };
 
+  const { id, title, author, url, likes, user } = blog;
+
   const [showDetails, setShowDetails] = useState(false);
-  const [likes, setLikes] = useState(blog.likes);
+  const [blogLikes, setBlogLikes] = useState(likes);
+  const currentUser = useContext(UserContext);
 
   const handleShowDetails = () => {
     setShowDetails(!showDetails);
   };
 
   const handleRemove = async () => {
-    try {
-      let deletedBlog = await blogService.del(blog.id);
-      if (deletedBlog === 204) {
-        setBlogWasDeleted(true);
+    const proceedToDelete = confirm(
+      "Are you sure you want to delete this blog?"
+    );
+
+    if (proceedToDelete) {
+      try {
+        let deletedBlog = await blogService.del(blog.id);
+        if (deletedBlog === 204) {
+          setBlogWasDeleted(true);
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
   };
 
   const handleLikes = async () => {
-    let updatedLikes = likes + 1;
-    setLikes(updatedLikes);
+    let updatedLikes = blogLikes + 1;
+    setBlogLikes(updatedLikes);
 
     let blogPayload = {
-      user: blog.user[0].id,
+      user: user[0].id,
       likes: updatedLikes,
-      url: blog.url,
-      author: blog.author,
-      title: blog.title,
+      url: url,
+      author: author,
+      title: title,
     };
 
     try {
-      await blogService.update(blogPayload, blog.id);
+      await blogService.update(blogPayload, id);
     } catch (err) {
       console.log(err);
     }
@@ -58,20 +68,22 @@ const Blog = ({ blog, setBlogWasDeleted }) => {
       <div className="details">
         <p>{blog.url}</p>
         <p>
-          {likes}
+          <span className="numberOfLikes">{blogLikes}</span>
           <button type="button" onClick={handleLikes} className="likeButton">
             like
           </button>
         </p>
-        {blog.user && blog.user.length > 0 && <p>{blog.user[0].name}</p>}
-        <button
-          type="button"
-          style={removeButtonStyle}
-          onClick={handleRemove}
-          className="removeButton"
-        >
-          remove
-        </button>
+        {user && user.length > 0 && <p>{user[0].name}</p>}
+        {user[0].name === currentUser.username && user.length > 0 && (
+          <button
+            type="button"
+            style={removeButtonStyle}
+            onClick={handleRemove}
+            className="removeButton"
+          >
+            remove
+          </button>
+        )}
       </div>
     );
   };
@@ -82,7 +94,7 @@ const Blog = ({ blog, setBlogWasDeleted }) => {
 
   return (
     <div style={blogStyle} className="singleBlog">
-      {blog.title} - {blog.author}
+      {title} - {author}
       <button
         style={{ marginLeft: 3 }}
         type="button"
