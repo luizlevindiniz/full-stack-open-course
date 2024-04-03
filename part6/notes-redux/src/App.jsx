@@ -1,29 +1,23 @@
-import { toggleImportanceOf } from "./actions/actions";
-import { useSelector, useDispatch } from "react-redux";
 import NoteForm from "./components/NoteForm";
+import NoteList from "./components/NoteList";
+import Filter from "./components/Filter";
+import { useDispatch } from "react-redux";
+import { setNotes } from "./reducers/noteReducer";
+import { useEffect } from "react";
+import noteService from "./services/notes";
 
 const App = () => {
   const dispatch = useDispatch();
-  const notes = useSelector((state) => {
-    return state;
-  });
 
-  const toggleImportanceof = (note) => {
-    dispatch(toggleImportanceOf(note));
-  };
+  useEffect(() => {
+    noteService.getAll().then((notes) => dispatch(setNotes(notes)));
+  }, []);
 
   return (
     <div>
-      <NoteForm></NoteForm>
-      <ul>
-        {notes.map((note) => (
-          <li key={note.id}>
-            {note.content}{" "}
-            <strong>{note.important ? "important" : "not important"}</strong>
-            <button onClick={() => toggleImportanceof(note)}>toggle</button>
-          </li>
-        ))}
-      </ul>
+      <NoteForm />
+      <Filter />
+      <NoteList />
     </div>
   );
 };

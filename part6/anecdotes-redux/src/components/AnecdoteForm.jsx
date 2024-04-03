@@ -1,8 +1,11 @@
 import { useDispatch } from "react-redux";
 import { create } from "../reducers/anecdoteReducer";
-import { PropTypes } from "prop-types";
+import {
+  setNotification,
+  eraseNotification,
+} from "../reducers/notificationReducer";
 
-const AnecdoteForm = ({ setNotification }) => {
+const AnecdoteForm = () => {
   const dispatch = useDispatch(); // store dispatcher
 
   const handleCreate = (event) => {
@@ -10,10 +13,10 @@ const AnecdoteForm = ({ setNotification }) => {
     const content = event.target.content.value;
     event.target.content.value = "";
     dispatch(create(content));
-    setNotification("blog created!");
+    dispatch(setNotification("blog created!"));
     setTimeout(() => {
-      setNotification(null);
-    }, 2000);
+      dispatch(eraseNotification());
+    }, 5000);
   };
 
   return (
@@ -28,10 +31,6 @@ const AnecdoteForm = ({ setNotification }) => {
       </form>
     </div>
   );
-};
-
-AnecdoteForm.propTypes = {
-  setNotification: PropTypes.func,
 };
 
 export default AnecdoteForm;

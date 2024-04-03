@@ -1,19 +1,43 @@
 import { useSelector, useDispatch } from "react-redux";
 import { vote } from "../reducers/anecdoteReducer";
 import Anecdote from "./Anecdote";
+import { createSelector } from "@reduxjs/toolkit";
+import {
+  setNotification,
+  eraseNotification,
+} from "../reducers/notificationReducer";
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector((state) => state); // store
+  const byVotes = (a, b) => b.votes - a.votes;
+
+  const sortedAnecdotes = createSelector(
+    (state) => state.anecdotes,
+    (state) => state.filter,
+    (anecdotes, filter) => {
+      return filter === ""
+        ? [...anecdotes].sort(byVotes)
+        : [...anecdotes]
+            .filter((anecdote) => anecdote.content.includes(filter))
+            .sort(byVotes);
+    }
+  );
+
+  const anecdotes = useSelector((state) => {
+    return sortedAnecdotes(state);
+  }); // store
   const dispatch = useDispatch(); // store dispatcher
 
-  const byVotes = (a, b) => b.votes - a.votes;
   const handleVotes = (id) => {
     dispatch(vote(id));
+    dispatch(setNotification("voted!"));
+    setTimeout(() => {
+      dispatch(eraseNotification());
+    }, 5000);
   };
 
   return (
     <div>
-      {anecdotes.sort(byVotes).map((anecdote) => (
+      {anecdotes.map((anecdote) => (
         <Anecdote key={anecdote.id} onClick={handleVotes} anecdote={anecdote} />
       ))}
     </div>

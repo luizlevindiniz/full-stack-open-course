@@ -1,6 +1,6 @@
 const Note = ({ note, onClick }) => {
   return (
-    <li key={note.id}>
+    <li>
       {note.content}{" "}
       <strong>{note.important ? "important" : "not important"}</strong>
       <button onClick={() => onClick(note)}>toggle</button>

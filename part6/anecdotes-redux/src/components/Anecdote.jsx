@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 const Anecdote = ({ anecdote, onClick }) => {
   const { id, content, votes } = anecdote;
   return (
-    <div key={id}>
+    <div>
       <div>{content}</div>
       <div>
         has {votes}
