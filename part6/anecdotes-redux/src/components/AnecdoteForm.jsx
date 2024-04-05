@@ -1,22 +1,22 @@
 import { useDispatch } from "react-redux";
-import { create } from "../reducers/anecdoteReducer";
-import {
-  setNotification,
-  eraseNotification,
-} from "../reducers/notificationReducer";
+import { createNewAnecdote } from "../reducers/anecdoteReducer";
+import { raiseNotification } from "../reducers/notificationReducer";
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch(); // store dispatcher
 
-  const handleCreate = (event) => {
+  const handleCreate = async (event) => {
     event.preventDefault();
     const content = event.target.content.value;
     event.target.content.value = "";
-    dispatch(create(content));
-    dispatch(setNotification("blog created!"));
-    setTimeout(() => {
-      dispatch(eraseNotification());
-    }, 5000);
+
+    const anecdoteToCreate = {
+      content: content,
+      votes: 0,
+    };
+
+    dispatch(createNewAnecdote(anecdoteToCreate));
+    dispatch(raiseNotification("new anecdote created!", 3));
   };
 
   return (

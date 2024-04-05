@@ -19,6 +19,16 @@
       "id": "00c4",
       "content": "test",
       "important": false
+    },
+    {
+      "id": "bf51",
+      "content": "asdasd",
+      "important": true
+    },
+    {
+      "id": "939d",
+      "content": "is important",
+      "important": true
     }
   ]
 }

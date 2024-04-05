@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 
 const Anecdote = ({ anecdote, onClick }) => {
-  const { id, content, votes } = anecdote;
+  const { content, votes } = anecdote;
   return (
     <div>
       <div>{content}</div>
       <div>
         has {votes}
-        <button onClick={() => onClick(id)}>vote</button>
+        <button onClick={() => onClick(anecdote)}>vote</button>
       </div>
     </div>
   );
